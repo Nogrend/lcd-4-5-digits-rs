@@ -1,0 +1,39 @@
+[package]
+name = "lcd-4-5-digits"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "no_std driver for a 4.5-digit static LCD via 74HC595 shift registers"
+repository = "https://github.com/Nogrend/lcd-4-5-digits"
+readme = "README.md"
+categories = ["embedded", "no-std", "hardware-support"]
+keywords = ["lcd", "embedded-hal", "74hc595", "seven-segment", "driver"]
+# Only build the explicitly-declared, feature-gated hardware examples.
+autoexamples = false
+
+[dependencies]
+embedded-hal = "1.0"
+libm = "0.2"
+
+[dev-dependencies]
+embedded-hal-mock = { version = "0.11", default-features = false, features = ["eh1"] }
+
+# Hardware examples are reference documentation; they are not built in CI.
+# Enable one (and add that chip's HAL) only when targeting the board.
+[features]
+stm32f4 = []
+stm32f7 = []
+esp32 = []
+
+[[example]]
+name = "stm32f4"
+required-features = ["stm32f4"]
+
+[[example]]
+name = "stm32f7"
+required-features = ["stm32f7"]
+
+[[example]]
+name = "esp32"
+required-features = ["esp32"]
