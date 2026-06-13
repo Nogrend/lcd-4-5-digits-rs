@@ -21,6 +21,7 @@ pub trait FrameWriter {
 ///
 /// Equivalent to the Arduino `shiftOut(MSBFIRST)` for each byte followed by a
 /// single latch pulse.
+#[derive(Debug)]
 pub struct BitBang<Latch, Clock, Data> {
     latch: Latch,
     clock: Clock,
@@ -31,6 +32,11 @@ impl<Latch, Clock, Data> BitBang<Latch, Clock, Data> {
     /// Build a bit-bang writer from the latch, clock and data pins.
     pub fn new(latch: Latch, clock: Clock, data: Data) -> Self {
         Self { latch, clock, data }
+    }
+
+    /// Consume the writer and return the `(latch, clock, data)` pins.
+    pub fn release(self) -> (Latch, Clock, Data) {
+        (self.latch, self.clock, self.data)
     }
 }
 
