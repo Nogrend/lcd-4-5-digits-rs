@@ -51,6 +51,7 @@ use frame::Frame;
 ///
 /// Generic over any [`FrameWriter`]; use [`Lcd45Digits::new_bitbang`] for the
 /// bundled three-pin software backend.
+#[derive(Debug)]
 pub struct Lcd45Digits<W: FrameWriter> {
     frame: Frame,
     writer: W,
@@ -64,6 +65,14 @@ impl<W: FrameWriter> Lcd45Digits<W> {
             frame: Frame::new(),
             writer,
         }
+    }
+
+    /// Consume the driver and return the underlying [`FrameWriter`].
+    ///
+    /// Lets you reclaim the transport — e.g. then call [`BitBang::release`] to
+    /// get the GPIO pins back when you need them elsewhere.
+    pub fn release(self) -> W {
+        self.writer
     }
 
     /// Blank the panel and flush.
@@ -129,6 +138,9 @@ where
 {
     /// Build a driver using the software bit-bang backend, in the same
     /// `(latch, clock, data)` order as the original library's constructor.
+    ///
+    /// All three pins must share one `OutputPin::Error` type — the norm for
+    /// every common HAL, where GPIO writes report a single error type.
     pub fn new_bitbang(latch: Latch, clock: Clock, data: Data) -> Self {
         Self::new(BitBang::new(latch, clock, data))
     }
