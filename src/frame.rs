@@ -13,7 +13,7 @@ use crate::segments::{COLON_RIGHT, DOT, FRAME_LEN, GLYPH, MINUS, NUMBER_1, Symbo
 const MIN: i16 = -19999;
 const MAX: i16 = 19999;
 
-/// Segment G only (the middle bar), shown on all four digits for overflow.
+/// Segment G only — the middle bar (bit 6).
 const OVERFLOW_GLYPH: u8 = 0x40;
 
 /// The raw display frame: `[symbol, thousands, hundreds, tens, units]`.
@@ -124,7 +124,7 @@ impl Frame {
         }
     }
 
-    /// Out-of-range pattern: clear the symbol byte, four middle bars on the digits.
+    /// The out-of-range display: four dashes, all symbols cleared.
     fn set_overflow(&mut self) {
         self.0[0] = 0x00;
         for digit in &mut self.0[1..] {
