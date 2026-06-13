@@ -46,7 +46,7 @@ impl Frame {
 
     pub(crate) fn set_integer(&mut self, value: i16) {
         if !in_range(value) {
-            self.overflow();
+            self.set_overflow();
             return;
         }
         self.set_symbol_bit(MINUS, value < 0);
@@ -61,7 +61,7 @@ impl Frame {
         let rounded = libm::roundf(value * multiplier) as i16;
 
         if !in_range(rounded) {
-            self.overflow();
+            self.set_overflow();
             return;
         }
         if decimals == 0 {
@@ -125,7 +125,7 @@ impl Frame {
     }
 
     /// Out-of-range pattern: clear the symbol byte, four middle bars on the digits.
-    fn overflow(&mut self) {
+    fn set_overflow(&mut self) {
         self.0[0] = 0x00;
         for digit in &mut self.0[1..] {
             *digit = OVERFLOW_GLYPH;
